@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Реєстрація</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'main/css/register.css' %}">
+</head>
+<body>
+    <div>
+    <form action="" method="POST" onsubmit="submitForm()">
+        {% csrf_token %}
+        <input type="text" name="email" placeholder="Електронна пошта" value="{{email}}">
+        <input type="text" name="name" placeholder="Ім'я" id="" value="{{name}}">
+        <input type="text" name="surname" placeholder="Прізвище" id="" value="{{surname}}">
+        <input type="password" name="password" placeholder="Пароль">
+        <input type="password" name="confirm_password" placeholder="Підтвердження паролю" id="">
+        {% if error %}
+            <p class="error">{{error}}</p>
+        {% endif %}
+        <button>Зареєструватись</button>
+        <a href="/auth">В мене вже є аккаунт</a>
+    </form>
+    </div>
+</body>
+</html>

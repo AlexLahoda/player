@@ -1,0 +1,9 @@
+<div>
+    {% for playlist in playlists %}
+    <button><a href="/playlists/{{playlist.title}}/">{{playlist.title}}</a></button>
+    
+    {% endfor %}
+</div>
+<div>
+   <a href="/create_playlist" target='_blank'>Створити новий</a>
+</div>

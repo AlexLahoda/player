@@ -1,0 +1,54 @@
+*{
+    padding: 0;
+    margin: 0;
+}
+button{
+    border-radius: 15px;
+    border: 1px solid darkgrey;
+    padding: 8px;
+}
+
+button:hover{
+    background-color:  lightblue;
+    color: white;
+    cursor: pointer;
+}
+body{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100dvh;
+}
+
+form{
+    border-radius: 15px;
+    border: 3px solid lightblue;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    min-width:fit-content;
+}
+
+input{
+    border: 1px solid lightblue;
+    border-radius: 15px;
+    padding: 10px;
+}
+
+input:focus {
+    background-color: aliceblue;
+}
+a{
+    text-decoration: none;
+}
+a:hover{
+    color:cadetblue;
+}
+.error{
+    font-size: 16px;
+    color: red;
+}

@@ -1,0 +1,29 @@
+{% if song %}
+<table>
+    <thhead>
+        <tr>
+            <th style="width: 5%">Назва</th>
+            <th>Автор</th>
+            <th>Рік</th>
+            <th>Зображення</th>
+            <th>Жанр</th>
+            <th>Прослуховувань</th>
+            <th>Завантажив</th>
+            <th>Опис</th>
+        </tr>
+    </thhead>
+    <tbody>
+        <tr>
+            <td>{{song.title}}</td>
+            <td>{{song.author}}</td>
+            <td>{{song.year}}</td>
+            <td><img style="height: 50px;" src="{{song.image.url}}" alt=""></td>
+            <td>{{song.genre}}</td>
+            <td>{{song.counter}}</td>
+            <td>{{song.uploaded_by}}</td>
+            <td>{{song.description}}</td>
+        </tr> 
+    </tbody>
+</table>
+{% endif %}
+

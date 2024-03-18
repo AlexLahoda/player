@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Аудіоплеєр</title>
+    {% load static %}
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="{% static 'main/js/reactions.js' %}" defer></script>
+    <script src="{% static 'main/js/playImprovement.js' %}" defer></script>
+    <script src="{% static 'main/js/modal.js' %}" defer></script>
+    <script src="{% static 'main/js/test.js' %}" defer></script>
+    <link rel="stylesheet" href="{% static 'main/css/main1.css' %}">
+  </head>
+<body>
+
+<div id="header">
+  <div id="search">
+    <form action="/" method="get">
+        <input name="data" placeholder="Введіть назву пісні чи ім'я автора" />
+        <button>Пошук</button>
+    </form>
+  </div>  
+    <div id="login">
+      {% if user.is_authenticated %}
+        <p>{{user.first_name}}</p>
+        <button onclick="window.location.href='/logout/';">Вийти</button>
+        {% else %}
+        <button onClick="window.location.href='/auth/';" type="button">Увійти</button>
+        <button onClick="window.location.href='/register/';" type="button">Зареєструватися</button>
+      {% endif %}
+    </div> 
+</div>
+
+<div id="menu">
+  <button><a href="/">Усі композиції</a></button>
+  {% if user.is_authenticated %}
+    <button onclick="javascript:window.open('/add/', '_blank');" type="button">Додати композицію</button>
+    <button><a href="/favorite/">Улюблене</a></button>
+    {% endif %}
+</div>
+
+<div class='songPage'>
+  {% include "main/song.html" %}
+</div>
+
+<div id="content">
+  <div id='genre'>
+    {%for genre in genres%}
+        <a href="/genres/{{genre}}/">{{genre}}</a>
+      {% endfor %}
+    </div>
+<div class="cover_play_pagin">
+  <ul id="toplay">
+    {% csrf_token %}
+        {% for song in songs %}
+        <li id="li{{song.id}}">
+            <img src="{{song.image.url}}" alt="">
+            <img src="{% static 'main/images/Play.png' %}" alt="Play" class='item' id="{{song.id}}" data-url="{{song.audio.url}}">
+            <div id="title"><a href="/uploaded_by/song_{{song.id}}/">{{ song.title}} - {{song.author}} - ({{song.year}}) - {{song.genre}}</a></div>
+            {% if user in song.likes.all%}
+            <img class="likeButton" id="{{song.id}}" src="{% static 'main/images/Liked.png' %}" alt="З Улюбленого">
+            {% else %}
+            <img class="likeButton" id="{{song.id}}" src="{% static 'main/images/Like.png' %}" alt="В Улюблене">
+            {% endif %}
+            <div style='font-size: 12px; text-align: center; margin-left: 10px;'>
+                Прослуховувань:<br>
+                <span id="counterId{{song.id}}">{{song.counter}}</span>
+            </div>
+            {% if user.is_authenticated %}
+              <button class="openModalBtn" data-songid="{{ song.id }}" style="margin-left:10px;">+</button>
+            {% endif %}
+            {% if in_playlist == 'yes' %}
+              <button class="del_pl" data-songid="{{ song.id }}">-</button>
+            {% endif %}
+            {% if user == song.uploaded_by%}
+            <div style="text-align: right;flex-grow: 1;">
+              <img class="delButton" id="{{song.id}}" src="{% static 'main/images/trash.png'%}" alt="Видалити">
+            </div>
+            {% endif %}
+        </li>
+        {% endfor %}
+      </ul>
+    {% if  pages_iter %}
+      <div id="paginations" class="paginations">
+        <a href="{{first_page}}">Початок</a>
+        {% for page in pages_iter %}
+        <a href="{{first_page}}{{page}}/">{{page}}</a>
+        {% endfor %}
+        <a href="{{first_page}}{{last_page}}/">Кінець</a>
+      </div>  
+      {% endif %}
+    </div>
+{% if user.is_authenticated %}
+<div class='playlists'>
+  <h3>Мої плейлисти</h3>
+  {% include "main/playlists.html" %}
+</div>
+{% endif %}
+
+<div class="modal" id="myModal">
+  <div class="modal-content">
+      <span class="close" id="closeModalBtn">&times;</span>
+      <h3>Оберіть плейлист:</h3>
+      {% csrf_token %}
+      <form id="myForm">
+          {% for playlist in playlists %}
+            <div>
+              <input type="checkbox" name="playlist" value="{{ playlist.id }}"> 
+              <span>{{ playlist.title }}</span>
+            </div>
+          {% endfor %}
+          <button type="button" id="submitBtn">Додати в плейлист</button>
+      </form>
+  </div>
+</div>
+</div>
+<div class="player">
+  <img src="{% static 'main/images/prev.png' %}" alt="prev" id="prevBtn">
+  <img src="{% static 'main/images/next.png' %}" alt="next"id="nextBtn">
+  <audio id="outPlayer" src="" controls ></audio>
+</div>
+<script>
+ window.onload = function() {
+    setMenuTop();
+
+    window.addEventListener('resize', function() {
+        setMenuTop();
+    });
+};
+
+function setMenuTop() {
+    var headerHeight = document.getElementById('header').offsetHeight;
+    document.getElementById('menu').style.top = headerHeight + 'px';
+}
+</script>
+</body>
+</html>

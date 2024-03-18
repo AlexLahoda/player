@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    {% load static %}
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="{% static 'main/js/reactions.js' %}" defer></script>
+    <script src="{% static 'main/js/playImprovement.js' %}" defer></script>
+    <script src="{% static 'main/js/modal.js' %}" defer></script>
+    <script src="{% static 'main/js/test.js' %}" defer></script>
+    <link rel="stylesheet" href="{% static 'main/css/main1.css' %}">
+</head>
+<body>
+    <ul id="toplay">
+    {% csrf_token %}
+        {% for song in songs %}
+        <li id="li{{song.id}}">
+          <img src="{{song.image.url}}" alt="" style="height: 50px;max-width: 50px;">
+          <img src="{% static 'main/images/play.png' %}" alt="Play" class='item' id="{{song.id}}" data-url="{{song.audio.url}}">
+          <div id="title"><a href="/uploaded_by/song_{{song.id}}/">{{ song.title}} - {{song.author}} - ({{song.year}}) - {{song.genre}}</a></div>
+            {% if user in song.likes.all%}
+            <img class="likeButton" id="{{song.id}}" src="{% static 'main/images/Liked.png' %}" alt="З Улюбленого">
+            {% else %}
+            <img class="likeButton" id="{{song.id}}" src="{% static 'main/images/Like.png' %}" alt="В Улюблене">
+            {% endif %}
+            <div style='font-size: 12px; text-align: center; margin-left: 10px;'>
+                Прослуховувань:<br>
+                <span id="counterId{{song.id}}">{{song.counter}}</span>
+            </div>
+            {% if user.is_authenticated %}
+              <button class="openModalBtn" data-songid="{{ song.id }}" style="margin-left:10px;">+</button>
+            {% endif %}
+            {% if in_playlist == 'yes' %}
+              <button class="del_pl" data-songid="{{ song.id }}">-</button>
+            {% endif %}
+            {% if user == song.uploaded_by%}
+            <div style="text-align: right;flex-grow: 1;">
+              <img class="delButton" id="{{song.id}}" src="{% static 'main/images/trash.png'%}" alt="Видалити">
+            </div>
+            {% endif %}
+        </li>
+        {% endfor %}
+      </ul>
+    {% if  pages_iter %}
+      <div id="paginations" class="paginations">
+        <a href="{{first_page}}">Початок</a>
+        {% for page in pages_iter %}
+        <a href="{{first_page}}{{page}}/">{{page}}</a>
+        {% endfor %}
+        <a href="{{first_page}}{{last_page}}/">Кінець</a>
+      </div>  
+      {% endif %}
+
+      <div class="modal" id="myModal">
+        <div class="modal-content">
+            <span class="close" id="closeModalBtn">&times;</span>
+            <h3>Оберіть плейлист:</h3>
+            {% csrf_token %}
+            <form id="myForm">
+                {% for playlist in playlists %}
+                  <div>
+                    <input type="checkbox" name="playlist" value="{{ playlist.id }}"> 
+                    <span>{{ playlist.title }}</span>
+                  </div>
+                {% endfor %}
+                <button type="button" id="submitBtn">Додати в плейлист</button>
+            </form>
+        </div>
+      </div>
+</body>
+</html>
